@@ -1,0 +1,31 @@
+# Use lightweight Ubuntu
+FROM ubuntu:22.04
+
+# Prevent prompts during install
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update & install Firefox and GUI dependencies
+RUN apt-get update && \
+    apt-get install -y firefox x11-apps libgtk-3-0 libdbus-glib-1-2 libx11-xcb1 && \
+    apt-get clean
+
+# Optional: create non-root user
+RUN useradd -m dockeruser
+USER dockeruser
+WORKDIR /home/dockeruser
+
+# Start Firefox
+CMD ["firefox"]
+docker build -t firefox-gui .
+xhost +local:docker
+
+docker run -it --rm \
+  --env DISPLAY=$DISPLAY \
+  --env XAUTHORITY=$XAUTHORITY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  firefox-gui
+xhost -local:docker
+docker run -d -p 5800:5800 \
+  --name firefox-vnc \
+  jlesage/firefox
+http://localhost:5800
