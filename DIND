@@ -1,0 +1,14 @@
+docker run --privileged --name dind-container -d docker:dind
+docker exec -it dind-container sh
+docker version
+docker info
+docker run hello-world
+# Dockerfile
+FROM docker:24-dind
+
+RUN apk add --no-cache bash curl git
+CMD ["dockerd-entrypoint.sh"]
+docker build -t my-dind .
+docker run --privileged -d --name my-custom-dind my-dind
+docker stop dind-container
+docker rm dind-container
