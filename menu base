@@ -1,0 +1,28 @@
+# app/menu_app.py
+
+def main_menu():
+    while True:
+        print("\n--- MENU ---")
+        print("1. Greet")
+        print("2. Add Two Numbers")
+        print("3. Exit")
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            name = input("Enter your name: ")
+            print(f"Hello, {name}!")
+        elif choice == '2':
+            try:
+                a = float(input("Enter first number: "))
+                b = float(input("Enter second number: "))
+                print(f"The sum is: {a + b}")
+            except ValueError:
+                print("Invalid input. Please enter numbers.")
+        elif choice == '3':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Try again.")
+
+if __name__ == "__main__":
+    main_menu()
