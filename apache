@@ -1,0 +1,33 @@
+
+<!-- html/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Apache in Docker</title>
+</head>
+<body>
+  <h1>Hello from Apache inside Docker!</h1>
+</body>
+</html>
+# Use official Apache image
+FROM httpd:2.4
+
+# Copy custom HTML into Apache's web root
+COPY html/ /usr/local/apache2/htdocs/
+docker build -t apache-server .
+docker run -dit --name apache-container -p 8080:80 apache-server
+http://localhost:8080
+
+
+6. (Optional) Live Editing with Volume Mount
+Instead of copying files during build, mount the folder live:
+
+bash
+Copy code
+docker run -dit --name apache-dev \
+  -p 8080:80 \
+  -v $(pwd)/html:/usr/local/apache2/htdocs/ \
+  httpd:2.4
+Now changes in html/ reflect instantly.
+
