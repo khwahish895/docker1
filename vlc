@@ -1,0 +1,26 @@
+
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install VLC and dependencies
+RUN apt-get update && \
+    apt-get install -y vlc x11-apps libx11-xcb1 libxcb-xinerama0 libgl1-mesa-glx && \
+    apt-get clean
+
+# Create a non-root user for GUI
+RUN useradd -m vlcuser
+USER vlcuser
+WORKDIR /home/vlcuser
+
+# Default command: Launch VLC GUI
+CMD ["vlc"]
+docker build -t vlc-gui .
+xhost +local:docker  # Allow GUI access
+
+docker run -it --rm \
+  -e DISPLAY=$DISPLAY \
+  -e XAUTHORITY=$XAUTHORITY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v /path/to/media:/media \
+  vlc-gui
